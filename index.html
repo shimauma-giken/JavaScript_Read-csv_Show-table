@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Indicate csv data by html table format</title>
+</head>
+
+  <body>
+
+    <table>
+        <tbody id="output_csv"></tbody>
+    </table>
+
+  <script>
+    const csvFilename = "./sample_ja.csv"
+    //const csvFilename = "./sample_eng.csv"
+    const outputElement = document.getElementById('output_csv');
+
+    function getCsvData(dataPath) {
+        const request = new XMLHttpRequest();
+        request.addEventListener('load', (event) => {
+            const response = event.target.responseText;
+            convertArray(response);
+        });
+        request.open('GET', dataPath, true);
+        request.send();
+    }
+
+    function convertArray(data) {
+        const dataArray = [];
+        // split data by CR or LF or CRLF
+        const dataString = data.split(/\r|\r\n|\n/);
+        for (let i = 0; i < dataString.length; i++) {
+            dataArray[i] = dataString[i].split(',');
+        }
+        let insertElement = '';
+        dataArray.forEach((element) => {
+            insertElement += '<tr>';
+            element.forEach((childElement) => {
+                insertElement += `<td>${childElement}</td>`
+            });
+            insertElement += '</tr>';
+        });
+        console.log(insertElement)
+        outputElement.innerHTML = insertElement;
+    }
+
+    getCsvData(csvFilename);
+
+
+  </script>
+
+  </body>
+</html>
